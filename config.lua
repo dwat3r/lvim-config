@@ -31,15 +31,14 @@ lvim.keys.normal_mode["gn"] =
 lvim.keys.normal_mode["gp"] =
 	"<cmd>lua vim.lsp.diagnostic.goto_prev({popup_opts = {border = lvim.lsp.popup_border}})<cr>"
 
-lvim.builtin.terminal.execs["2"] = ""
 function _G.set_terminal_keymaps()
-  local opts = {noremap = true}
-  vim.api.nvim_buf_set_keymap(0, 't', '<esc>', [[<C-\><C-n>]], opts)
-  vim.api.nvim_buf_set_keymap(0, 't', 'jk', [[<C-\><C-n>]], opts)
-  vim.api.nvim_buf_set_keymap(0, 't', '<C-h>', [[<C-\><C-n><C-W>h]], opts)
-  vim.api.nvim_buf_set_keymap(0, 't', '<C-j>', [[<C-\><C-n><C-W>j]], opts)
-  vim.api.nvim_buf_set_keymap(0, 't', '<C-k>', [[<C-\><C-n><C-W>k]], opts)
-  vim.api.nvim_buf_set_keymap(0, 't', '<C-l>', [[<C-\><C-n><C-W>l]], opts)
+	local opts = { noremap = true }
+	vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], opts)
+	vim.api.nvim_buf_set_keymap(0, "t", "jk", [[<C-\><C-n>]], opts)
+	vim.api.nvim_buf_set_keymap(0, "t", "<C-h>", [[<C-\><C-n><C-W>h]], opts)
+	vim.api.nvim_buf_set_keymap(0, "t", "<C-j>", [[<C-\><C-n><C-W>j]], opts)
+	vim.api.nvim_buf_set_keymap(0, "t", "<C-k>", [[<C-\><C-n><C-W>k]], opts)
+	vim.api.nvim_buf_set_keymap(0, "t", "<C-l>", [[<C-\><C-n><C-W>l]], opts)
 end
 -- lvim.keys.normal_mode["<C-Up>"] = ""
 -- edit a default keymapping
@@ -105,6 +104,15 @@ lvim.builtin.treesitter.ensure_installed = {
 
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enabled = true
+lvim.builtin.treesitter.incremental_selection = {
+	enable = true,
+	keymaps = {
+		init_selection = "<C-g>",
+		node_incremental = "<C-g>",
+		scope_incremental = "<leader>vv",
+		node_decremental = "<leader>vV",
+	},
+}
 lvim.builtin.which_key.mappings["S"] = {
 	name = "Session",
 	c = { "<cmd>lua require('session_manager').LoadCurrentDirSession<cr>", "Restore last session for current dir" },
@@ -194,7 +202,7 @@ lvim.autocommands.custom_groups = {
 	-- { "BufWinEnter", "*.lua", "setlocal ts=8 sw=8" },
 	-- { "VimEnter", "*", "lua require('persistence').load()" }
 	{ "VimLeavePre", "*", "lua require('session_manager').save_current_session()" },
-  { "TermOpen", "term://*", "lua set_terminal_keymaps()"}
+	{ "TermOpen", "term://*", "lua set_terminal_keymaps()" },
 }
 vim.opt_global.shortmess:remove("F")
 lvim.lsp.override = { "rust" }
@@ -278,14 +286,14 @@ lvim.plugins = {
 	},
 	{ "tpope/vim-unimpaired" },
 	{ "GEverding/vim-hocon" },
-	{ "mg979/vim-visual-multi" },
-}
--- formatters
-local formatters = require("lvim.lsp.null-ls.formatters")
-formatters.setup({
 	{
-		exe = "prettier",
-		args = { "--print-width", "100" },
-		filetypes = { "typescript", "typescriptreact" },
+		"pwntester/octo.nvim",
 	},
-})
+	{ "mg979/vim-visual-multi" },
+	{
+		"luukvbaal/stabilize.nvim",
+		config = function()
+			require("stabilize").setup()
+		end,
+	},
+}
